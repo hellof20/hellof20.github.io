@@ -149,7 +149,271 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/17/spinnaker-distributed-install/" data-id="cjr0oydro00008svrq4uvayfl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/01/17/spinnaker-distributed-install/" data-id="cjr0ozwv80001p4vryb836aza" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-specified_version_with_yum" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/17/specified_version_with_yum/" class="article-date">
+  <time datetime="2018-07-17T07:43:47.000Z" itemprop="datePublished">2018-07-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/17/specified_version_with_yum/">install specified version with yum</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>To see what particular versions are available to you via <code>yum</code> you can use the <code>--showduplicates</code>switch.</p>
+        
+          <p class="article-more-link">
+            <a href="/2018/07/17/specified_version_with_yum/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/17/specified_version_with_yum/" data-id="cjr0ozwv90002p4vrvtredbj5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-lvm_scale" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/13/lvm_scale/" class="article-date">
+  <time datetime="2018-07-12T18:43:47.000Z" itemprop="datePublished">2018-07-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/13/lvm_scale/">Linux下LVM容量扩展</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文主要描述如何对基于LVM的文件系统进行扩容</p>
+        
+          <p class="article-more-link">
+            <a href="/2018/07/13/lvm_scale/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/13/lvm_scale/" data-id="cjr0ozwvc0004p4vri5q3cwk5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-docker_clean" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/12/docker_clean/" class="article-date">
+  <time datetime="2017-07-12T07:43:47.000Z" itemprop="datePublished">2017-07-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/虚拟化/">虚拟化</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/12/docker_clean/">Docker容器清理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>杀死所有正在运行的容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker kill $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除所有已经停止的容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除所有未打标签的镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rmi $(docker images -q -f dangling=true)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除所有镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除不用的本地volume</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker volume prune</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/12/docker_clean/" data-id="cjr0ozwv30000p4vryp71q7wa" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-setup_shadowsocks_server_centos7" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/12/setup_shadowsocks_server_centos7/" class="article-date">
+  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文介绍在centos7上部署shadowsocks server</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/07/12/setup_shadowsocks_server_centos7/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/12/setup_shadowsocks_server_centos7/" data-id="cjr0ozwvb0003p4vrc2yfyubo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spinnaker-local-install-ubuntu14.04" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/" class="article-date">
+  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/12/spinnaker-local-install-ubuntu14.04/">Spnnaker单机部署</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文介绍在ubuntu14.04上面安装Spnnaker</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/12/spinnaker-local-install-ubuntu14.04/" data-id="cjr0ozwvd0005p4vriefqmocc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-setup_http_proxy_in_docker" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/12/setup_http_proxy_in_docker/" class="article-date">
+  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/12/setup_http_proxy_in_docker/">Setup http proxy in Docker</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>First create a systemd drop-in directory for the docker service: </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p /etc/systemd/system/docker.service.d</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2017/07/12/setup_http_proxy_in_docker/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/12/setup_http_proxy_in_docker/" data-id="cjr0p6d170000asvre19gij8f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -166,6 +430,13 @@
           <aside id="sidebar">
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a></li></ul>
+    </div>
+  </div>
+
 
   
     
@@ -177,7 +448,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li></ul>
     </div>
   </div>
 
@@ -191,6 +462,22 @@
         
           <li>
             <a href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/17/specified_version_with_yum/">install specified version with yum</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/13/lvm_scale/">Linux下LVM容量扩展</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/12/docker_clean/">Docker容器清理</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
           </li>
         
       </ul>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Spnnaker单机部署 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文介绍在ubuntu14.04上面安装Spnnaker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spnnaker单机部署">
+<meta property="og:url" content="http://yoursite.com/2017/07/12/spinnaker-local-install-ubuntu14.04/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本文介绍在ubuntu14.04上面安装Spnnaker">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-12T06:24:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spnnaker单机部署">
+<meta name="twitter:description" content="本文介绍在ubuntu14.04上面安装Spnnaker">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-spinnaker-local-install-ubuntu14.04" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/" class="article-date">
+  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spnnaker单机部署
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文介绍在ubuntu14.04上面安装Spnnaker</p>
+<a id="more"></a>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>操作系统: ubuntu 14.04<br>最低配置要求: 4C8G</p>
+<h3 id="安装halyard"><a href="#安装halyard" class="headerlink" title="安装halyard"></a>安装halyard</h3><ol>
+<li><p>下载 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -O https://raw.githubusercontent.com/spinnaker/halyard/master/install/stable/InstallHalyard.sh</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo bash InstallHalyard.sh</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证是否安装成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hal -v</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="配置spinnaker"><a href="#配置spinnaker" class="headerlink" title="配置spinnaker"></a>配置spinnaker</h3><ol>
+<li><p><strong>配置redis存储</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$hal config storage edit --type redis</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>配置cloudprovider</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$hal config provider docker-registry enable</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>集成harbor</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$hal config provider docker-registry account add harbor \</span><br><span class="line">--address http://15.114.100.72 \</span><br><span class="line">--repositories library/redis --username admin --password</span><br></pre></td></tr></table></figure>
+<p>Harbor12345</p>
+</li>
+<li><p><strong>集成docker hub</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$hal config provider docker-registry account add my-docker-registry \</span><br><span class="line">--address index.docker.io \</span><br><span class="line">--repositories library/redis \</span><br><span class="line">--username hellof20 \</span><br><span class="line">--password</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>集成kubernetes</strong></p>
+<p>在kubernetes集群上运行kubectl config view得到如下信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">clusters:</span><br><span class="line">cluster:</span><br><span class="line">server: http://16.187.145.35:8080</span><br><span class="line">name: local-server</span><br><span class="line">contexts:</span><br><span class="line">context:</span><br><span class="line">cluster: local-server</span><br><span class="line">namespace: default</span><br><span class="line">user: myself</span><br><span class="line">name: default-context</span><br><span class="line">current-context: default-context</span><br><span class="line">kind: Config</span><br><span class="line">preferences: &#123;&#125;</span><br><span class="line">users:</span><br><span class="line">name: myself</span><br><span class="line">user:</span><br><span class="line">password: secret</span><br><span class="line">username: admin</span><br></pre></td></tr></table></figure>
+<p>如果没有该信息，请执行如下指令生成(部分参数需替换）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl config set-credentials myself --username=admin --password=secret</span><br><span class="line">$ kubectl config set-cluster local-server --server=http://localhost:8080</span><br><span class="line">$ kubectl config set-context default-context --cluster=local-server --user=myself</span><br><span class="line">$ kubectl config use-context default-context</span><br><span class="line">$ kubectl config set contexts.default-context.namespace default</span><br><span class="line">$ kubectl config view</span><br></pre></td></tr></table></figure>
+<p>详细请参考：<br><a href="https://kubernetes.io/docs/tasks/access-application-cluster/authenticate-across-clusters-kubeconfig/" target="_blank" rel="noopener">https://kubernetes.io/docs/tasks/access-application-cluster/authenticate-across-clusters-kubeconfig/</a>  </p>
+<p>把这段信息放到~/.kube/config文件中，如果没有请新建</p>
+</li>
+<li><p><strong>集成kubernetes</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$hal config provider kubernetes enable</span><br><span class="line">$hal config provider kubernetes account add my-k8s-account --docker-registries my-docker-registry,harbor</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>集成jenkins</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$hal config ci jenkins enable</span><br><span class="line">$hal config ci jenkins master add my-jenkins-master \</span><br><span class="line">--address http://15.114.100.64:8080/jenkins --username admin \</span><br><span class="line">--password</span><br><span class="line">The password of the jenkins user to authenticate as.: Happy123</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>集成openstack</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hal config provider openstack account add hos-account \</span><br><span class="line">--auth-url https://172.18.100.5:5000/v3 --username admin \</span><br><span class="line">--domain-name Default --regions region1 --project-name admin \</span><br><span class="line">--password 6tl9nQAUED --environment hos4.0</span><br></pre></td></tr></table></figure>
+<p>需要注意以下几点:</p>
+<ol>
+<li><p>集成的openstack不能低于M版本</p>
+</li>
+<li><p>必须有以下服务：</p>
+<p>Keystone (Identity) v3<br>Compute v2<br>LBaaS v2<br>Networking v2<br>Orchestration (Heat)<br>Ceilometer<br>Telemetry Alarming (Aodh)<br>Glance v1</p>
+</li>
+<li><p>如果集成的keystone不是https的话需要加上–insecure</p>
+</li>
+<li><p>在公司内部集成openstack，需要在clouddriver中设置proxy和noproxy：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DEFAULT_JVM_OPTS=&apos;&quot;-Dhttp.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttp.proxyPort=8080&quot; &quot;-Dhttp.nonProxyHosts=172.*&quot; &quot;-Dhttps.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttps.proxyPort=8080&quot; &quot;-Djava.security.egd=file:/dev/./urandom&quot; &quot;-Dspring.config.location=/opt/spinnaker/config/&quot;&apos;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>本机能否和openstack的各个服务（不单单是keystone）正常通讯，如果不通需要检查路由表</p>
+</li>
+</ol>
+</li>
+</ol>
+<ol start="9">
+<li><p><strong>配置邮件提醒(可选) </strong><br> 在~/.hal/{deployment}/profiles/文件夹下新建echo-local.yml文件。根据smtp端口把下面内容放到echo-local.yml文件中<br> smtp 25端口配置如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mail:</span><br><span class="line">  enabled: true</span><br><span class="line">  from: support@foxcloud.com</span><br><span class="line">spring:</span><br><span class="line">  mail:</span><br><span class="line"> host: 15.114.100.65</span><br><span class="line"> username: support@foxcloud.com</span><br><span class="line"> password: centos</span><br><span class="line"> properties:</span><br><span class="line">   mail:</span><br><span class="line">     smtp:</span><br><span class="line">       auth: true</span><br><span class="line">       ssl:</span><br><span class="line">         enable: false</span><br><span class="line">       socketFactory:</span><br><span class="line">         port: 25</span><br><span class="line">         fallback: false</span><br></pre></td></tr></table></figure>
+<p>smtp 465端口配置如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">mail:</span><br><span class="line">  enabled: true</span><br><span class="line">  from: a15021127204@gmail.com</span><br><span class="line">spring:</span><br><span class="line">  mail:</span><br><span class="line"> host: smtp.gmail.com</span><br><span class="line"> username: a15021127204@gmail.com</span><br><span class="line"> password: swj%1986</span><br><span class="line"> properties:</span><br><span class="line">   mail:</span><br><span class="line">     smtp:</span><br><span class="line">       auth: true</span><br><span class="line">       ssl:</span><br><span class="line">         enable: true</span><br><span class="line">       socketFactory:</span><br><span class="line">         port: 465</span><br><span class="line">         class: javax.net.ssl.SSLSocketFactory</span><br><span class="line">         fallback: false</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：查看settings.js中email是否开启，默认为开启。如果没开启需要开启，并把settings.js也放到~/.hal/{deployment}/profiles/文件夹下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">window.spinnakerSettings = &#123;</span><br><span class="line">// ...</span><br><span class="line">  notifications: &#123;</span><br><span class="line"> email: &#123;</span><br><span class="line">   enabled: true</span><br><span class="line"> &#125;,</span><br><span class="line"></span><br><span class="line">// ...</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="部署spinnaker"><a href="#部署spinnaker" class="headerlink" title="部署spinnaker"></a>部署spinnaker</h2><ol>
+<li><p>获取当前spinnaker的版本信息,比如获取到的是1.2.2<pre>$hal version list</pre></p>
+</li>
+<li><p>配置版本信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$hal config version edit --version 1.2.2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>开始部署</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sudo hal deploy apply</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署完成后，默认只能本机访问，改为从外网能直接访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$echo &quot;host: 0.0.0.0&quot; | tee \</span><br><span class="line">~/.hal/default/service-settings/gate.yml \</span><br><span class="line">~/.hal/default/service-settings/deck.yml</span><br><span class="line">$hal config security ui edit --override-base-url http://x.x.x.x:9000</span><br><span class="line">$hal config security api edit --override-base-url http://x.x.x.x:8084</span><br><span class="line">$sudo hal deploy apply</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="访问spinnaker"><a href="#访问spinnaker" class="headerlink" title="访问spinnaker"></a>访问spinnaker</h2><p><a href="http://x.x.x.x:9000" target="_blank" rel="noopener">http://x.x.x.x:9000</a></p>
+<h2 id="spinnaker维护"><a href="#spinnaker维护" class="headerlink" title="spinnaker维护"></a>spinnaker维护</h2><p><strong>重启spinnaker服务</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo restart spinnaker</span><br></pre></td></tr></table></figure>
+<p><strong>重启单个服务</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo restart clouddriver</span><br><span class="line">$ sudo restart front50</span><br></pre></td></tr></table></figure>
+<p><strong>spinnaker日志</strong><br>日志文件目录为/var/log/spinnaker</p>
+<h2 id="Troubleshooting"><a href="#Troubleshooting" class="headerlink" title="Troubleshooting"></a>Troubleshooting</h2><ol>
+<li><p>sudo bash InstallHalyard.sh这一步可能遇到证书安装的问题,设置<br> <code>alias sudo=&quot;sudo -E&quot;</code></p>
+</li>
+<li><p>给halyard配置代理，否则运行hal config version的时候会报错<br> 修改/opt/halyard/bin/halyard文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DEFAULT_JVM_OPTS=&apos;&quot;-Dhttp.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttp.proxyPort=8080&quot; &quot;-Dhttp.nonProxyHosts=172.17.2.*&quot; &quot;-Dhttps.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttps.proxyPort=8080&quot; &quot;-Djava.security.egd=file:/dev/./urandom&quot; &quot;-Dspring.config.location=/opt/spinnaker/config/&quot;&apos;</span><br></pre></td></tr></table></figure>
+<p>修改后重启halyard服务 </p>
+<p><code>sudo restart halyard</code></p>
+</li>
+<li><p>给clouddriver配置代理，否则spinnaker界面上无法找到docker registry的image<br> 修改/opt/clouddriver/bin/clouddriver文件<br> <code>DEFAULT_JVM_OPTS=&#39;&quot;-Dhttp.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttp.proxyPort=8080&quot; &quot;-Dhttp.nonProxyHosts=172.17.2.*&quot; &quot;-Dhttps.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttps.proxyPort=8080&quot; &quot;-Djava.security.egd=file:/dev/./urandom&quot; &quot;-Dspring.config.location=/opt/spinnaker/config/&quot;&#39;</code></p>
+</li>
+<li><p>spinnaker 1.2.2版本可以正常使用</p>
+</li>
+</ol>
+<h2 id="更新记录"><a href="#更新记录" class="headerlink" title="更新记录"></a>更新记录</h2><p>updated:9/30/2017 3:07:25 PM</p>
+<p>updated:10/17/2017 2:09:25 PM<br>get error:<br><a href="https://github.com/spinnaker/spinnaker/issues/1988" target="_blank" rel="noopener">https://github.com/spinnaker/spinnaker/issues/1988</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/12/spinnaker-local-install-ubuntu14.04/" data-id="cjr0ozwvd0005p4vriefqmocc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/07/12/setup_shadowsocks_server_centos7/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          shadowsocks server部署
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/12/setup_http_proxy_in_docker/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Setup http proxy in Docker</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/17/specified_version_with_yum/">install specified version with yum</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/13/lvm_scale/">Linux下LVM容量扩展</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/12/docker_clean/">Docker容器清理</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

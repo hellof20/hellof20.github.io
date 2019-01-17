@@ -5,15 +5,19 @@
   
 
   
-  <title>Archives: 2019 | Hexo</title>
+  <title>Docker容器清理 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/archives/2019/index.html">
+  <meta name="description" content="杀死所有正在运行的容器 1$docker kill $(docker ps -a -q)  删除所有已经停止的容器 1$docker rm $(docker ps -a -q)  删除所有未打标签的镜像 1$docker rmi $(docker images -q -f dangling=true)  删除所有镜像 1$docker rmi $(docker images -q)  删除不用的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker容器清理">
+<meta property="og:url" content="http://yoursite.com/2017/07/12/docker_clean/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="杀死所有正在运行的容器 1$docker kill $(docker ps -a -q)  删除所有已经停止的容器 1$docker rm $(docker ps -a -q)  删除所有未打标签的镜像 1$docker rmi $(docker images -q -f dangling=true)  删除所有镜像 1$docker rmi $(docker images -q)  删除不用的">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-17T14:24:52.698Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="Docker容器清理">
+<meta name="twitter:description" content="杀死所有正在运行的容器 1$docker kill $(docker ps -a -q)  删除所有已经停止的容器 1$docker rm $(docker ps -a -q)  删除所有未打标签的镜像 1$docker rmi $(docker images -q -f dangling=true)  删除所有镜像 1$docker rmi $(docker images -q)  删除不用的">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -60,40 +64,80 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/01/17/spinnaker-distributed-install/" class="archive-article-date">
-  <time datetime="2019-01-17T13:42:43.371Z" itemprop="datePublished">Jan 17</time>
+        <section id="main"><article id="post-docker_clean" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/12/docker_clean/" class="article-date">
+  <time datetime="2017-07-12T07:43:47.000Z" itemprop="datePublished">2017-07-12</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/虚拟化/">虚拟化</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
+    <h1 class="article-title" itemprop="name">
+      Docker容器清理
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>杀死所有正在运行的容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker kill $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除所有已经停止的容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除所有未打标签的镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rmi $(docker images -q -f dangling=true)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除所有镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除不用的本地volume</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker volume prune</span><br></pre></td></tr></table></figure></li>
+</ul>
 
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/12/docker_clean/" data-id="cjr0ozwv30000p4vryp71q7wa" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/07/13/lvm_scale/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Linux下LVM容量扩展
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/12/setup_shadowsocks_server_centos7/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">shadowsocks server部署</div>
+    </a>
+  
+</nav>
+
+  
+</article>
 
 </section>
         

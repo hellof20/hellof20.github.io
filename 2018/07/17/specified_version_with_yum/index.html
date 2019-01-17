@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>install specified version with yum | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="To see what particular versions are available to you via yum you can use the --showduplicatesswitch.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="install specified version with yum">
+<meta property="og:url" content="http://yoursite.com/2018/07/17/specified_version_with_yum/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="To see what particular versions are available to you via yum you can use the --showduplicatesswitch.">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-17T03:03:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="install specified version with yum">
+<meta name="twitter:description" content="To see what particular versions are available to you via yum you can use the --showduplicatesswitch.">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-specified_version_with_yum" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/17/specified_version_with_yum/" class="article-date">
+  <time datetime="2018-07-17T07:43:47.000Z" itemprop="datePublished">2018-07-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      install specified version with yum
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>To see what particular versions are available to you via <code>yum</code> you can use the <code>--showduplicates</code>switch.</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ yum --showduplicates list httpd | expand</span><br><span class="line">Loaded plugins: fastestmirror, langpacks, refresh-packagekit</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * fedora: mirror.steadfast.net</span><br><span class="line"> * rpmfusion-free: csc.mcs.sdsmt.edu</span><br><span class="line"> * rpmfusion-free-updates: csc.mcs.sdsmt.edu</span><br><span class="line"> * rpmfusion-nonfree: csc.mcs.sdsmt.edu</span><br><span class="line"> * rpmfusion-nonfree-updates: csc.mcs.sdsmt.edu</span><br><span class="line"> * updates: mirror.steadfast.net</span><br><span class="line">Available Packages</span><br><span class="line">httpd.x86_64                        2.4.6-6.fc20                         fedora </span><br><span class="line">httpd.x86_64                        2.4.10-1.fc20                        updates</span><br></pre></td></tr></table></figure>
+<p>As far as installing a particular version? You can append the version info to the name of the package like so:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install &lt;package name&gt;-&lt;version info&gt;</span><br></pre></td></tr></table></figure>
+<p>For example in this case if I wanted to install the older version, 2.4.6-6 I’d do the following:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install httpd-2.4.6-6</span><br></pre></td></tr></table></figure>
+<p>You can also include the release info when specifying a package. In this case since I’m dealing with Fedora 20 (F20) the release info would be “fc20”, and the architecture info too.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install httpd-2.4.6-6.fc20</span><br><span class="line">$ sudo yum install httpd-2.4.6-6.fc20.x86_64</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/17/specified_version_with_yum/" data-id="cjr0ozwv90002p4vrvtredbj5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/01/17/spinnaker-distributed-install/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spinnaker分布式部署模式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/07/13/lvm_scale/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Linux下LVM容量扩展</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/17/specified_version_with_yum/">install specified version with yum</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/13/lvm_scale/">Linux下LVM容量扩展</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/12/docker_clean/">Docker容器清理</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
