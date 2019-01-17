@@ -72,10 +72,19 @@
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h2 id="title-spinnaker分布式部署模式："><a href="#title-spinnaker分布式部署模式：" class="headerlink" title="title: spinnaker分布式部署模式："></a>title: spinnaker分布式部署模式：</h2><h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>操作系统: ubuntu 14.04 或者 centos7<br>软件要求： docker 1.12 和 kubernetes集群1.49<br>最低配置要求: 2C4G</p>
+        <h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>操作系统: ubuntu 14.04 或者 centos7<br>软件要求： docker 1.12 和 kubernetes集群1.49<br>最低配置要求: 2C4G</p>
 <h2 id="安装halyard"><a href="#安装halyard" class="headerlink" title="安装halyard"></a>安装halyard</h2><ol>
 <li><p>下载halyard的docker 容器 </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull gcr.io/spinnaker-marketplace/halyard:stable</span><br></pre></td></tr></table></figure>
@@ -98,54 +107,41 @@
 </ol>
 <h2 id="配置spinnaker"><a href="#配置spinnaker" class="headerlink" title="配置spinnaker"></a>配置spinnaker</h2><p>spinnaker配置部分参考单机部署手册</p>
 <h2 id="部署spinnaker"><a href="#部署spinnaker" class="headerlink" title="部署spinnaker"></a>部署spinnaker</h2><ol>
-<li>获取当前spinnaker的版本信息,比如获取到的是1.2.2<pre>$hal version list</pre></li>
-<li>配置版本信息<pre>$hal config version edit –version 1.4.2</pre></li>
-<li>指定分布式部署<pre>hal config deploy edit –type distributed –account-name $ACCOUNT</pre><br> <strong>$ACCOUNT替换成kubernetes cloud privider中的name</strong> </li>
-<li>开始部署<pre>$sudo hal deploy apply</pre></li>
-<li>查看部署进程<pre>kubectl -n spinnaker get pods -o wide</pre></li>
-<li>新建gate和deck service<br> spin-deck-remote.yaml内容如下： <pre>apiVersion: v1
- kind: Service
- metadata:
-   labels:
- app: spin
- stack: deck
-   name: spin-deck-remote
-   namespace: spinnaker
- spec:
-   ports:
-   - port: 9001
- protocol: TCP
- targetPort: 9000
- nodePort: 30443
-      selector:
- load-balancer-spin-deck: "true"
-      type: NodePort</pre>
-spin-gate-remote.yaml内容如下
- <pre>apiVersion: v1
- kind: Service
- metadata:
-      name: spin-gate-remote
-      namespace: spinnaker
- spec:
-      ports:
-   - port: 8085
- protocol: TCP
- targetPort: 8084
- nodePort: 30444
-      selector:
- load-balancer-spin-gate: "true"
-      type: NodePort</pre>
- <pre>kubectl create -f spin-deck-remote.yaml
- kubectl create -f spin-gate-remote.yaml</pre></li>
-<li>部署完成后，默认只能本机访问，改为从外网能直接访问<pre><br>$echo “host: 0.0.0.0” | tee \<br>~/.hal/default/service-settings/gate.yml \<br>~/.hal/default/service-settings/deck.yml<br>$hal config security ui edit –override-base-url <a href="http://x.x.x.x:30443" target="_blank" rel="noopener">http://x.x.x.x:30443</a><br>$hal config security api edit –override-base-url <a href="http://x.x.x.x:30444" target="_blank" rel="noopener">http://x.x.x.x:30444</a><br>$sudo hal deploy apply<br></pre></li>
+<li><p>获取当前spinnaker的版本信息,比如获取到的是1.2.2</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal version list</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置版本信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal config version edit --version 1.4.2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>指定分布式部署</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal config deploy edit --type distributed --account-name $ACCOUNT</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>$ACCOUNT替换成kubernetes cloud privider中的name</strong> </p>
+<ol start="4">
+<li><p>开始部署</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo hal deploy apply</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看部署进程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n spinnaker get pods -o wide</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建gate和deck service<br>spin-deck-remote.yaml内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">app: spin</span><br><span class="line">stack: deck</span><br><span class="line">  name: spin-deck-remote</span><br><span class="line">  namespace: spinnaker</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">  - port: 9001</span><br><span class="line">protocol: TCP</span><br><span class="line">targetPort: 9000</span><br><span class="line">nodePort: 30443</span><br><span class="line">     selector:</span><br><span class="line">load-balancer-spin-deck: &quot;true&quot;</span><br><span class="line">     type: NodePort</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>spin-gate-remote.yaml内容如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">    kind: Service</span><br><span class="line">    metadata:</span><br><span class="line">         name: spin-gate-remote</span><br><span class="line">         namespace: spinnaker</span><br><span class="line">    spec:</span><br><span class="line">         ports:</span><br><span class="line">      - port: 8085</span><br><span class="line">    protocol: TCP</span><br><span class="line">    targetPort: 8084</span><br><span class="line">    nodePort: 30444</span><br><span class="line">         selector:</span><br><span class="line">    load-balancer-spin-gate: &quot;true&quot;</span><br><span class="line">         type: NodePort</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f spin-deck-remote.yaml</span><br><span class="line">kubectl create -f spin-gate-remote.yaml</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>部署完成后，默认只能本机访问，改为从外网能直接访问<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$echo &quot;host: 0.0.0.0&quot; | tee \</span><br><span class="line">~/.hal/default/service-settings/gate.yml \</span><br><span class="line">~/.hal/default/service-settings/deck.yml</span><br><span class="line">$hal config security ui edit --override-base-url http://x.x.x.x:30443</span><br><span class="line">$hal config security api edit --override-base-url http://x.x.x.x:30444</span><br><span class="line">$sudo hal deploy apply</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
 <h2 id="访问spinnaker"><a href="#访问spinnaker" class="headerlink" title="访问spinnaker"></a>访问spinnaker</h2><p><a href="http://x.x.x.x:30443" target="_blank" rel="noopener">http://x.x.x.x:30443</a></p>
 <h2 id="Troubleshooting"><a href="#Troubleshooting" class="headerlink" title="Troubleshooting"></a>Troubleshooting</h2><ol>
-<li>容器中无法直接给halyard配置代理，需要新建Dockerfile文件，把加好代理的halyard文件替换老的halyard文件并生成新的image.<br> /opt/halyard/bin/halyard文件增加代理如下 <pre>DEFAULT_JVM_OPTS='"-Dhttp.proxyHost=web-proxy.sgp.hp.com" "-Dhttp.proxyPort=8080" "-Dhttp.nonProxyHosts=172.17.2.*" "-Dhttps.proxyHost=web-proxy.sgp.hp.com" "-Dhttps.proxyPort=8080" "-Djava.security.egd=file:/dev/./urandom" "-Dspring.config.location=/opt/spinnaker/config/"'</pre>
- Dockerfile文件如下：
- <pre>FROM gcr.io/spinnaker-marketplace/halyard:stable
-ADD halyard /opt/halyard/bin/halyard
-RUN chmod +x /opt/halyard/bin/halyard</pre></li>
+<li>容器中无法直接给halyard配置代理，需要新建Dockerfile文件，把加好代理的halyard文件替换老的halyard文件并生成新的image.<br> /opt/halyard/bin/halyard文件增加代理如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DEFAULT_JVM_OPTS=&apos;&quot;-Dhttp.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttp.proxyPort=8080&quot; &quot;-Dhttp.nonProxyHosts=172.17.2.*&quot; &quot;-Dhttps.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttps.proxyPort=8080&quot; &quot;-Djava.security.egd=file:/dev/./urandom&quot; &quot;-Dspring.config.location=/opt/spinnaker/config/&quot;&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>Dockerfile文件如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM gcr.io/spinnaker-marketplace/halyard:stable</span><br><span class="line">ADD halyard /opt/halyard/bin/halyard</span><br><span class="line">RUN chmod +x /opt/halyard/bin/halyard</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
 <li>front50 pod无法正常运行，需要修改yaml文件中的image，改为0.4.0-411</li>
 <li>spinnaker 1.4.2版本可以正常使用</li>
 </ol>
@@ -153,7 +149,7 @@ RUN chmod +x /opt/halyard/bin/halyard</pre></li>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/17/spinnaker-distributed-install/" data-id="cjr0o7uu40000g4vr5hdj0jei" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/01/17/spinnaker-distributed-install/" data-id="cjr0oaq2p0001n8vr2rn989hl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -198,7 +194,7 @@ RUN chmod +x /opt/halyard/bin/halyard</pre></li>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/17/hello-world/" data-id="cjr0o7uua0001g4vrs5qi3o7a" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/01/17/hello-world/" data-id="cjr0oaq2k0000n8vr7o7px423" class="article-share-link">Share</a>
       
       
     </footer>
@@ -239,7 +235,7 @@ RUN chmod +x /opt/halyard/bin/halyard</pre></li>
       <ul>
         
           <li>
-            <a href="/2019/01/17/spinnaker-distributed-install/">(no title)</a>
+            <a href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
           </li>
         
           <li>
