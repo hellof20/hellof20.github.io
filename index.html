@@ -149,7 +149,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/17/spinnaker-distributed-install/" data-id="cjr0o090q0002fovrv2oq7dtd" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/01/17/spinnaker-distributed-install/" data-id="cjr37w4v5000bqgvrdpmzauqg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/17/specified_version_with_yum/" data-id="cjr0ozgwn0007fovraatccyd2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/17/specified_version_with_yum/" data-id="cjr37w4v30008qgvribzq7d7g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -231,7 +231,84 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/13/lvm_scale/" data-id="cjr0ozere0005fovropfhnvey" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/13/lvm_scale/" data-id="cjr37w4uy0003qgvr1xgddtfa" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-setup_vxlan_with_linux_bridge" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/04/27/setup_vxlan_with_linux_bridge/" class="article-date">
+  <time datetime="2018-04-26T18:43:47.000Z" itemprop="datePublished">2018-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/网络/">网络</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/27/setup_vxlan_with_linux_bridge/">Linux Bridge搭建Vxlan环境</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h4><table>
+<thead>
+<tr>
+<th>Hostname</th>
+<th>OS</th>
+<th>Kernel</th>
+<th>ens33</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>CentOS 7</td>
+<td>3.10.0</td>
+<td>192.168.17.130</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>CentOS 7</td>
+<td>3.10.0</td>
+<td>192.168.17.131</td>
+</tr>
+</tbody>
+</table>
+<h4 id="实验目标"><a href="#实验目标" class="headerlink" title="实验目标"></a>实验目标</h4><p>在实验主机上namespace下的两款虚拟网卡互通</p>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>在node1上运行:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr br-vx</span><br><span class="line">ip link set br-vx up</span><br><span class="line">ip link add vxlan10 type vxlan id 100 remote 192.168.17.131 dstport 4789 dev ens33</span><br><span class="line">ip link set vxlan10 up</span><br><span class="line">brctl addif br-vx vxlan10</span><br><span class="line">ip link add type veth</span><br><span class="line">ifconfig veth0 up</span><br><span class="line">ip netns add ns1</span><br><span class="line">ip link set dev veth1 netns ns1</span><br><span class="line">ip netns exec ns1 ip link set dev veth1</span><br><span class="line">brctl addif br-vx veth0</span><br><span class="line">ip netns exec ns1 ifconfig veth1 192.167.1.5/24 up</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在node2运行:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr br-vx</span><br><span class="line">ip link set br-vx up</span><br><span class="line">ip link add vxlan10 type vxlan id 100 remote 192.168.17.130 dstport 4789 dev ens33</span><br><span class="line">ip link set vxlan10 up</span><br><span class="line">brctl addif br-vx vxlan10</span><br><span class="line">ip link add type veth</span><br><span class="line">ifconfig veth0 up</span><br><span class="line">ip netns add ns1</span><br><span class="line">ip link set dev veth1 netns ns1</span><br><span class="line">ip netns exec ns1 ip link set dev veth1</span><br><span class="line">brctl addif br-vx veth0</span><br><span class="line">ip netns exec ns1 ifconfig veth1 192.167.1.6/24 up</span><br></pre></td></tr></table></figure>
+<ul>
+<li>测试连通性:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# ip netns exec ns1 ping 192.167.1.6</span><br><span class="line">PING 192.167.1.6 (192.167.1.6) 56(84) bytes of data.</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=1 ttl=64 time=0.857 ms</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=2 ttl=64 time=0.894 ms</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=3 ttl=64 time=0.430 ms</span><br><span class="line">^C</span><br><span class="line">--- 192.167.1.6 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 2002ms </span><br><span class="line">rtt min/avg/max/mdev = 0.430/0.727/0.894/0.210 ms</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/04/27/setup_vxlan_with_linux_bridge/" data-id="cjr37w4uz0004qgvrionzes8o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -287,89 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/clean_docker_containers/" data-id="cjr37oabt00005ovrng6suihc" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-setup_shadowsocks_server_centos7" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/setup_shadowsocks_server_centos7/" class="article-date">
-  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文介绍在centos7上部署shadowsocks server</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/12/setup_shadowsocks_server_centos7/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/setup_shadowsocks_server_centos7/" data-id="cjr0ozfrv0006fovrmaiy87d9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spinnaker-local-install-ubuntu14.04" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/" class="article-date">
-  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/spinnaker-local-install-ubuntu14.04/">Spnnaker单机部署</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文介绍在ubuntu14.04上面安装Spnnaker</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/spinnaker-local-install-ubuntu14.04/" data-id="cjr0ozhbw0008fovr1j3is7xq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/07/12/clean_docker_containers/" data-id="cjr37w4uq0000qgvrr4sljv18" class="article-share-link">Share</a>
       
       
     </footer>
@@ -413,7 +408,89 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/setup_http_proxy_in_docker/" data-id="cjr0p4x750009fovrw9vvlt0r" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/07/12/setup_http_proxy_in_docker/" data-id="cjr37w4v10005qgvrq76twk1s" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-setup_shadowsocks_server_centos7" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/12/setup_shadowsocks_server_centos7/" class="article-date">
+  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文介绍在centos7上部署shadowsocks server</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/07/12/setup_shadowsocks_server_centos7/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/12/setup_shadowsocks_server_centos7/" data-id="cjr37w4v20007qgvrjhxlf04x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spinnaker-local-install-ubuntu14.04" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/" class="article-date">
+  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/12/spinnaker-local-install-ubuntu14.04/">Spnnaker单机部署</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文介绍在ubuntu14.04上面安装Spnnaker</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/07/12/spinnaker-local-install-ubuntu14.04/" data-id="cjr37w4v4000aqgvrq6wlkj23" class="article-share-link">Share</a>
       
       
     </footer>
@@ -494,7 +571,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/07/18/install_vm_with_virsh/" data-id="cjr37lqso0000ukvr4jg6bd5n" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/07/18/install_vm_with_virsh/" data-id="cjr37w4uv0001qgvrxophofgt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -514,7 +591,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/容器化/">容器化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/容器化/">容器化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a></li></ul>
     </div>
   </div>
 
@@ -529,7 +606,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
     </div>
   </div>
 
@@ -554,11 +631,11 @@
           </li>
         
           <li>
-            <a href="/2017/07/12/clean_docker_containers/">清理Docker容器</a>
+            <a href="/2018/04/27/setup_vxlan_with_linux_bridge/">Linux Bridge搭建Vxlan环境</a>
           </li>
         
           <li>
-            <a href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
+            <a href="/2017/07/12/clean_docker_containers/">清理Docker容器</a>
           </li>
         
       </ul>

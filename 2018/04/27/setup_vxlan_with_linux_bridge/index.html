@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Linux Bridge搭建Vxlan环境 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="实验环境   Hostname OS Kernel ens33     node1 CentOS 7 3.10.0 192.168.17.130   node2 CentOS 7 3.10.0 192.168.17.131    实验目标在实验主机上namespace下的两款虚拟网卡互通 步骤 在node1上运行:  123456789101112brctl addbr br-vxip link">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Bridge搭建Vxlan环境">
+<meta property="og:url" content="http://yoursite.com/2018/04/27/setup_vxlan_with_linux_bridge/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="实验环境   Hostname OS Kernel ens33     node1 CentOS 7 3.10.0 192.168.17.130   node2 CentOS 7 3.10.0 192.168.17.131    实验目标在实验主机上namespace下的两款虚拟网卡互通 步骤 在node1上运行:  123456789101112brctl addbr br-vxip link">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T08:37:17.065Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux Bridge搭建Vxlan环境">
+<meta name="twitter:description" content="实验环境   Hostname OS Kernel ens33     node1 CentOS 7 3.10.0 192.168.17.130   node2 CentOS 7 3.10.0 192.168.17.131    实验目标在实验主机上namespace下的两款虚拟网卡互通 步骤 在node1上运行:  123456789101112brctl addbr br-vxip link">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-setup_vxlan_with_linux_bridge" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/04/27/setup_vxlan_with_linux_bridge/" class="article-date">
+  <time datetime="2018-04-26T18:43:47.000Z" itemprop="datePublished">2018-04-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/网络/">网络</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux Bridge搭建Vxlan环境
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h4><table>
+<thead>
+<tr>
+<th>Hostname</th>
+<th>OS</th>
+<th>Kernel</th>
+<th>ens33</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>CentOS 7</td>
+<td>3.10.0</td>
+<td>192.168.17.130</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>CentOS 7</td>
+<td>3.10.0</td>
+<td>192.168.17.131</td>
+</tr>
+</tbody>
+</table>
+<h4 id="实验目标"><a href="#实验目标" class="headerlink" title="实验目标"></a>实验目标</h4><p>在实验主机上namespace下的两款虚拟网卡互通</p>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>在node1上运行:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr br-vx</span><br><span class="line">ip link set br-vx up</span><br><span class="line">ip link add vxlan10 type vxlan id 100 remote 192.168.17.131 dstport 4789 dev ens33</span><br><span class="line">ip link set vxlan10 up</span><br><span class="line">brctl addif br-vx vxlan10</span><br><span class="line">ip link add type veth</span><br><span class="line">ifconfig veth0 up</span><br><span class="line">ip netns add ns1</span><br><span class="line">ip link set dev veth1 netns ns1</span><br><span class="line">ip netns exec ns1 ip link set dev veth1</span><br><span class="line">brctl addif br-vx veth0</span><br><span class="line">ip netns exec ns1 ifconfig veth1 192.167.1.5/24 up</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在node2运行:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr br-vx</span><br><span class="line">ip link set br-vx up</span><br><span class="line">ip link add vxlan10 type vxlan id 100 remote 192.168.17.130 dstport 4789 dev ens33</span><br><span class="line">ip link set vxlan10 up</span><br><span class="line">brctl addif br-vx vxlan10</span><br><span class="line">ip link add type veth</span><br><span class="line">ifconfig veth0 up</span><br><span class="line">ip netns add ns1</span><br><span class="line">ip link set dev veth1 netns ns1</span><br><span class="line">ip netns exec ns1 ip link set dev veth1</span><br><span class="line">brctl addif br-vx veth0</span><br><span class="line">ip netns exec ns1 ifconfig veth1 192.167.1.6/24 up</span><br></pre></td></tr></table></figure>
+<ul>
+<li>测试连通性:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# ip netns exec ns1 ping 192.167.1.6</span><br><span class="line">PING 192.167.1.6 (192.167.1.6) 56(84) bytes of data.</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=1 ttl=64 time=0.857 ms</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=2 ttl=64 time=0.894 ms</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=3 ttl=64 time=0.430 ms</span><br><span class="line">^C</span><br><span class="line">--- 192.167.1.6 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 2002ms </span><br><span class="line">rtt min/avg/max/mdev = 0.430/0.727/0.894/0.210 ms</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/04/27/setup_vxlan_with_linux_bridge/" data-id="cjr37w4uz0004qgvrionzes8o" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/07/13/lvm_scale/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Linux下LVM容量扩展
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/12/clean_docker_containers/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">清理Docker容器</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/容器化/">容器化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/17/specified_version_with_yum/">install specified version with yum</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/13/lvm_scale/">Linux下LVM容量扩展</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/27/setup_vxlan_with_linux_bridge/">Linux Bridge搭建Vxlan环境</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/12/clean_docker_containers/">清理Docker容器</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
