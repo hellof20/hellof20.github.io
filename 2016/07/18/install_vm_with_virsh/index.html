@@ -5,15 +5,19 @@
   
 
   
-  <title>Hexo</title>
+  <title>virsh安装和管理虚拟机 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="服务器安装kvm和virsh1apt-get install kvm qemu-kvm virtinst libvirt-bin virt-viewer vncviewer -y 启动虚拟机启动虚拟机的方式有多种：  通过img文件的方式启动虚拟机 定义好虚拟机的xml文件然后再导入img文件启动 安装iso镜像的方式  通过img文件的方式启动虚拟机：123virt-install --conn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="virsh安装和管理虚拟机">
+<meta property="og:url" content="http://yoursite.com/2016/07/18/install_vm_with_virsh/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="服务器安装kvm和virsh1apt-get install kvm qemu-kvm virtinst libvirt-bin virt-viewer vncviewer -y 启动虚拟机启动虚拟机的方式有多种：  通过img文件的方式启动虚拟机 定义好虚拟机的xml文件然后再导入img文件启动 安装iso镜像的方式  通过img文件的方式启动虚拟机：123virt-install --conn">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T08:28:30.300Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="virsh安装和管理虚拟机">
+<meta name="twitter:description" content="服务器安装kvm和virsh1apt-get install kvm qemu-kvm virtinst libvirt-bin virt-viewer vncviewer -y 启动虚拟机启动虚拟机的方式有多种：  通过img文件的方式启动虚拟机 定义好虚拟机的xml文件然后再导入img文件启动 安装iso镜像的方式  通过img文件的方式启动虚拟机：123virt-install --conn">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -60,370 +64,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-spinnaker-distributed-install" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/01/17/spinnaker-distributed-install/" class="article-date">
-  <time datetime="2019-01-17T13:42:43.371Z" itemprop="datePublished">2019-01-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>操作系统: ubuntu 14.04 或者 centos7<br>软件要求： docker 1.12 和 kubernetes集群1.49<br>最低配置要求: 2C4G</p>
-<h2 id="安装halyard"><a href="#安装halyard" class="headerlink" title="安装halyard"></a>安装halyard</h2><ol>
-<li><p>下载halyard的docker 容器 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull gcr.io/spinnaker-marketplace/halyard:stable</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol start="2">
-<li><p>安装前准备</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/.hal</span><br><span class="line">mkdir ~/.kube</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol start="3">
-<li><p>启动halyard容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 8084:8084 -p 9000:9000  --name halyard --rm  -v ~/.hal:/root/.hal  -v ~/.kube:/root/.kube gcr.io/spinnaker-marketplace/halyard:stable</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol start="4">
-<li><p>测试halyard安装是否成功</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it halyard bash</span><br><span class="line">hal -v</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="配置spinnaker"><a href="#配置spinnaker" class="headerlink" title="配置spinnaker"></a>配置spinnaker</h2><p>spinnaker配置部分参考单机部署手册</p>
-<h2 id="部署spinnaker"><a href="#部署spinnaker" class="headerlink" title="部署spinnaker"></a>部署spinnaker</h2><ol>
-<li><p>获取当前spinnaker的版本信息,比如获取到的是1.2.2</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal version list</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置版本信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal config version edit --version 1.4.2</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>指定分布式部署</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal config deploy edit --type distributed --account-name $ACCOUNT</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><strong>$ACCOUNT替换成kubernetes cloud privider中的name</strong> </p>
-<ol start="4">
-<li><p>开始部署</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo hal deploy apply</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看部署进程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n spinnaker get pods -o wide</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>新建gate和deck service<br>spin-deck-remote.yaml内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">app: spin</span><br><span class="line">stack: deck</span><br><span class="line">  name: spin-deck-remote</span><br><span class="line">  namespace: spinnaker</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">  - port: 9001</span><br><span class="line">protocol: TCP</span><br><span class="line">targetPort: 9000</span><br><span class="line">nodePort: 30443</span><br><span class="line">     selector:</span><br><span class="line">load-balancer-spin-deck: &quot;true&quot;</span><br><span class="line">     type: NodePort</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>spin-gate-remote.yaml内容如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">    kind: Service</span><br><span class="line">    metadata:</span><br><span class="line">         name: spin-gate-remote</span><br><span class="line">         namespace: spinnaker</span><br><span class="line">    spec:</span><br><span class="line">         ports:</span><br><span class="line">      - port: 8085</span><br><span class="line">    protocol: TCP</span><br><span class="line">    targetPort: 8084</span><br><span class="line">    nodePort: 30444</span><br><span class="line">         selector:</span><br><span class="line">    load-balancer-spin-gate: &quot;true&quot;</span><br><span class="line">         type: NodePort</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f spin-deck-remote.yaml</span><br><span class="line">kubectl create -f spin-gate-remote.yaml</span><br></pre></td></tr></table></figure>
-<ol start="5">
-<li>部署完成后，默认只能本机访问，改为从外网能直接访问<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$echo &quot;host: 0.0.0.0&quot; | tee \</span><br><span class="line">~/.hal/default/service-settings/gate.yml \</span><br><span class="line">~/.hal/default/service-settings/deck.yml</span><br><span class="line">$hal config security ui edit --override-base-url http://x.x.x.x:30443</span><br><span class="line">$hal config security api edit --override-base-url http://x.x.x.x:30444</span><br><span class="line">$sudo hal deploy apply</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="访问spinnaker"><a href="#访问spinnaker" class="headerlink" title="访问spinnaker"></a>访问spinnaker</h2><p><a href="http://x.x.x.x:30443" target="_blank" rel="noopener">http://x.x.x.x:30443</a></p>
-<h2 id="Troubleshooting"><a href="#Troubleshooting" class="headerlink" title="Troubleshooting"></a>Troubleshooting</h2><ol>
-<li>容器中无法直接给halyard配置代理，需要新建Dockerfile文件，把加好代理的halyard文件替换老的halyard文件并生成新的image.<br> /opt/halyard/bin/halyard文件增加代理如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DEFAULT_JVM_OPTS=&apos;&quot;-Dhttp.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttp.proxyPort=8080&quot; &quot;-Dhttp.nonProxyHosts=172.17.2.*&quot; &quot;-Dhttps.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttps.proxyPort=8080&quot; &quot;-Djava.security.egd=file:/dev/./urandom&quot; &quot;-Dspring.config.location=/opt/spinnaker/config/&quot;&apos;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>Dockerfile文件如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM gcr.io/spinnaker-marketplace/halyard:stable</span><br><span class="line">ADD halyard /opt/halyard/bin/halyard</span><br><span class="line">RUN chmod +x /opt/halyard/bin/halyard</span><br></pre></td></tr></table></figure></p>
-<ol start="2">
-<li>front50 pod无法正常运行，需要修改yaml文件中的image，改为0.4.0-411</li>
-<li>spinnaker 1.4.2版本可以正常使用</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/17/spinnaker-distributed-install/" data-id="cjr0o090q0002fovrv2oq7dtd" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-specified_version_with_yum" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/17/specified_version_with_yum/" class="article-date">
-  <time datetime="2018-07-17T07:43:47.000Z" itemprop="datePublished">2018-07-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/17/specified_version_with_yum/">install specified version with yum</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>To see what particular versions are available to you via <code>yum</code> you can use the <code>--showduplicates</code>switch.</p>
-        
-          <p class="article-more-link">
-            <a href="/2018/07/17/specified_version_with_yum/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/17/specified_version_with_yum/" data-id="cjr0ozgwn0007fovraatccyd2" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-lvm_scale" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/13/lvm_scale/" class="article-date">
-  <time datetime="2018-07-12T18:43:47.000Z" itemprop="datePublished">2018-07-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/13/lvm_scale/">Linux下LVM容量扩展</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文主要描述如何对基于LVM的文件系统进行扩容</p>
-        
-          <p class="article-more-link">
-            <a href="/2018/07/13/lvm_scale/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/13/lvm_scale/" data-id="cjr0ozere0005fovropfhnvey" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-clean_docker_containers" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/clean_docker_containers/" class="article-date">
-  <time datetime="2017-07-12T07:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器化/">容器化</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/clean_docker_containers/">清理Docker容器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li><p>杀死所有正在运行的容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker kill $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除所有已经停止的容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除所有未打标签的镜像</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rmi $(docker images -q -f dangling=true)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除所有镜像</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除不用的本地volume</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker volume prune</span><br></pre></td></tr></table></figure></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/clean_docker_containers/" data-id="cjr37oabt00005ovrng6suihc" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-setup_shadowsocks_server_centos7" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/setup_shadowsocks_server_centos7/" class="article-date">
-  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文介绍在centos7上部署shadowsocks server</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/12/setup_shadowsocks_server_centos7/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/setup_shadowsocks_server_centos7/" data-id="cjr0ozfrv0006fovrmaiy87d9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spinnaker-local-install-ubuntu14.04" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/" class="article-date">
-  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/spinnaker-local-install-ubuntu14.04/">Spnnaker单机部署</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文介绍在ubuntu14.04上面安装Spnnaker</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/spinnaker-local-install-ubuntu14.04/" data-id="cjr0ozhbw0008fovr1j3is7xq" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-setup_http_proxy_in_docker" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/setup_http_proxy_in_docker/" class="article-date">
-  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/setup_http_proxy_in_docker/">Setup http proxy in Docker</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>First create a systemd drop-in directory for the docker service: </li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p /etc/systemd/system/docker.service.d</span><br></pre></td></tr></table></figure>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/12/setup_http_proxy_in_docker/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/setup_http_proxy_in_docker/" data-id="cjr0p4x750009fovrw9vvlt0r" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-install_vm_with_virsh" class="article article-type-post" itemscope="" itemprop="blogPost">
+        <section id="main"><article id="post-install_vm_with_virsh" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/07/18/install_vm_with_virsh/" class="article-date">
   <time datetime="2016-07-17T18:43:47.000Z" itemprop="datePublished">2016-07-18</time>
@@ -440,8 +81,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/18/install_vm_with_virsh/">virsh安装和管理虚拟机</a>
+    <h1 class="article-title" itemprop="name">
+      virsh安装和管理虚拟机
     </h1>
   
 
@@ -500,11 +141,23 @@
     </footer>
   </div>
   
-</article>
-
+    
+<nav id="article-nav">
+  
+    <a href="/2017/07/12/setup_http_proxy_in_docker/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Setup http proxy in Docker
+        
+      </div>
+    </a>
+  
+  
+</nav>
 
   
-
+</article>
 
 </section>
         
