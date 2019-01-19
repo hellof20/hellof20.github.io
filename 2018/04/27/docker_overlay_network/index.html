@@ -5,15 +5,33 @@
   
 
   
-  <title>Hexo</title>
+  <title>Docker overlay网络介绍-转 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="Part1:IntroductionAt D2SI, we have been using Docker since its very beginning and have been helping many projects go into production. We believe that going into production requires a strong understand">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker overlay网络介绍-转">
+<meta property="og:url" content="http://yoursite.com/2018/04/27/docker_overlay_network/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Part1:IntroductionAt D2SI, we have been using Docker since its very beginning and have been helping many projects go into production. We believe that going into production requires a strong understand">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.49556722281770393.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.9816935097998147.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.32534073709035805.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.332978911926179.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.7843311421375276.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.9862716027066811.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.7492188326233786.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.42928645687760714.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.7483964795417486.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.03262201883286964.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.593256515598132.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.3509958583487576.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.16155041328181752.png">
+<meta property="og:updated_time" content="2019-01-19T09:14:58.054Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="Docker overlay网络介绍-转">
+<meta name="twitter:description" content="Part1:IntroductionAt D2SI, we have been using Docker since its very beginning and have been helping many projects go into production. We believe that going into production requires a strong understand">
+<meta name="twitter:image" content="http://yoursite.com/2018/04/27/docker_overlay_network/0.49556722281770393.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -60,265 +78,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-spinnaker-distributed-install" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/01/17/spinnaker-distributed-install/" class="article-date">
-  <time datetime="2019-01-17T13:42:43.371Z" itemprop="datePublished">2019-01-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/17/spinnaker-distributed-install/">Spinnaker分布式部署模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>操作系统: ubuntu 14.04 或者 centos7<br>软件要求： docker 1.12 和 kubernetes集群1.49<br>最低配置要求: 2C4G</p>
-<h2 id="安装halyard"><a href="#安装halyard" class="headerlink" title="安装halyard"></a>安装halyard</h2><ol>
-<li><p>下载halyard的docker 容器 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull gcr.io/spinnaker-marketplace/halyard:stable</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol start="2">
-<li><p>安装前准备</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/.hal</span><br><span class="line">mkdir ~/.kube</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol start="3">
-<li><p>启动halyard容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 8084:8084 -p 9000:9000  --name halyard --rm  -v ~/.hal:/root/.hal  -v ~/.kube:/root/.kube gcr.io/spinnaker-marketplace/halyard:stable</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol start="4">
-<li><p>测试halyard安装是否成功</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it halyard bash</span><br><span class="line">hal -v</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="配置spinnaker"><a href="#配置spinnaker" class="headerlink" title="配置spinnaker"></a>配置spinnaker</h2><p>spinnaker配置部分参考单机部署手册</p>
-<h2 id="部署spinnaker"><a href="#部署spinnaker" class="headerlink" title="部署spinnaker"></a>部署spinnaker</h2><ol>
-<li><p>获取当前spinnaker的版本信息,比如获取到的是1.2.2</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal version list</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置版本信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal config version edit --version 1.4.2</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>指定分布式部署</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal config deploy edit --type distributed --account-name $ACCOUNT</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><strong>$ACCOUNT替换成kubernetes cloud privider中的name</strong> </p>
-<ol start="4">
-<li><p>开始部署</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo hal deploy apply</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看部署进程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n spinnaker get pods -o wide</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>新建gate和deck service<br>spin-deck-remote.yaml内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">app: spin</span><br><span class="line">stack: deck</span><br><span class="line">  name: spin-deck-remote</span><br><span class="line">  namespace: spinnaker</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">  - port: 9001</span><br><span class="line">protocol: TCP</span><br><span class="line">targetPort: 9000</span><br><span class="line">nodePort: 30443</span><br><span class="line">     selector:</span><br><span class="line">load-balancer-spin-deck: &quot;true&quot;</span><br><span class="line">     type: NodePort</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>spin-gate-remote.yaml内容如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">    kind: Service</span><br><span class="line">    metadata:</span><br><span class="line">         name: spin-gate-remote</span><br><span class="line">         namespace: spinnaker</span><br><span class="line">    spec:</span><br><span class="line">         ports:</span><br><span class="line">      - port: 8085</span><br><span class="line">    protocol: TCP</span><br><span class="line">    targetPort: 8084</span><br><span class="line">    nodePort: 30444</span><br><span class="line">         selector:</span><br><span class="line">    load-balancer-spin-gate: &quot;true&quot;</span><br><span class="line">         type: NodePort</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f spin-deck-remote.yaml</span><br><span class="line">kubectl create -f spin-gate-remote.yaml</span><br></pre></td></tr></table></figure>
-<ol start="5">
-<li>部署完成后，默认只能本机访问，改为从外网能直接访问<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$echo &quot;host: 0.0.0.0&quot; | tee \</span><br><span class="line">~/.hal/default/service-settings/gate.yml \</span><br><span class="line">~/.hal/default/service-settings/deck.yml</span><br><span class="line">$hal config security ui edit --override-base-url http://x.x.x.x:30443</span><br><span class="line">$hal config security api edit --override-base-url http://x.x.x.x:30444</span><br><span class="line">$sudo hal deploy apply</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="访问spinnaker"><a href="#访问spinnaker" class="headerlink" title="访问spinnaker"></a>访问spinnaker</h2><p><a href="http://x.x.x.x:30443" target="_blank" rel="noopener">http://x.x.x.x:30443</a></p>
-<h2 id="Troubleshooting"><a href="#Troubleshooting" class="headerlink" title="Troubleshooting"></a>Troubleshooting</h2><ol>
-<li>容器中无法直接给halyard配置代理，需要新建Dockerfile文件，把加好代理的halyard文件替换老的halyard文件并生成新的image.<br> /opt/halyard/bin/halyard文件增加代理如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DEFAULT_JVM_OPTS=&apos;&quot;-Dhttp.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttp.proxyPort=8080&quot; &quot;-Dhttp.nonProxyHosts=172.17.2.*&quot; &quot;-Dhttps.proxyHost=web-proxy.sgp.hp.com&quot; &quot;-Dhttps.proxyPort=8080&quot; &quot;-Djava.security.egd=file:/dev/./urandom&quot; &quot;-Dspring.config.location=/opt/spinnaker/config/&quot;&apos;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>Dockerfile文件如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM gcr.io/spinnaker-marketplace/halyard:stable</span><br><span class="line">ADD halyard /opt/halyard/bin/halyard</span><br><span class="line">RUN chmod +x /opt/halyard/bin/halyard</span><br></pre></td></tr></table></figure></p>
-<ol start="2">
-<li>front50 pod无法正常运行，需要修改yaml文件中的image，改为0.4.0-411</li>
-<li>spinnaker 1.4.2版本可以正常使用</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/17/spinnaker-distributed-install/" data-id="cjr39buwb0007dkvr6t7bb4cr" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-specified_version_with_yum" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/17/specified_version_with_yum/" class="article-date">
-  <time datetime="2018-07-17T07:43:47.000Z" itemprop="datePublished">2018-07-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/17/specified_version_with_yum/">install specified version with yum</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>To see what particular versions are available to you via <code>yum</code> you can use the <code>--showduplicates</code>switch.</p>
-        
-          <p class="article-more-link">
-            <a href="/2018/07/17/specified_version_with_yum/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/17/specified_version_with_yum/" data-id="cjr39buwc0008dkvrczkm5w5t" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-lvm_scale" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/13/lvm_scale/" class="article-date">
-  <time datetime="2018-07-12T18:43:47.000Z" itemprop="datePublished">2018-07-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/13/lvm_scale/">Linux下LVM容量扩展</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文主要描述如何对基于LVM的文件系统进行扩容</p>
-        
-          <p class="article-more-link">
-            <a href="/2018/07/13/lvm_scale/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/13/lvm_scale/" data-id="cjr39buw40001dkvr3too8t36" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-setup_vxlan_with_linux_bridge" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/04/27/setup_vxlan_with_linux_bridge/" class="article-date">
-  <time datetime="2018-04-26T18:43:47.000Z" itemprop="datePublished">2018-04-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络/">网络</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/27/setup_vxlan_with_linux_bridge/">Linux Bridge搭建Vxlan环境</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h4><table>
-<thead>
-<tr>
-<th>Hostname</th>
-<th>OS</th>
-<th>Kernel</th>
-<th>ens33</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>node1</td>
-<td>CentOS 7</td>
-<td>3.10.0</td>
-<td>192.168.17.130</td>
-</tr>
-<tr>
-<td>node2</td>
-<td>CentOS 7</td>
-<td>3.10.0</td>
-<td>192.168.17.131</td>
-</tr>
-</tbody>
-</table>
-<h4 id="实验目标"><a href="#实验目标" class="headerlink" title="实验目标"></a>实验目标</h4><p>在实验主机上namespace下的两款虚拟网卡互通</p>
-<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
-<li>在node1上运行:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr br-vx</span><br><span class="line">ip link set br-vx up</span><br><span class="line">ip link add vxlan10 type vxlan id 100 remote 192.168.17.131 dstport 4789 dev ens33</span><br><span class="line">ip link set vxlan10 up</span><br><span class="line">brctl addif br-vx vxlan10</span><br><span class="line">ip link add type veth</span><br><span class="line">ifconfig veth0 up</span><br><span class="line">ip netns add ns1</span><br><span class="line">ip link set dev veth1 netns ns1</span><br><span class="line">ip netns exec ns1 ip link set dev veth1</span><br><span class="line">brctl addif br-vx veth0</span><br><span class="line">ip netns exec ns1 ifconfig veth1 192.167.1.5/24 up</span><br></pre></td></tr></table></figure>
-<ul>
-<li>在node2运行:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr br-vx</span><br><span class="line">ip link set br-vx up</span><br><span class="line">ip link add vxlan10 type vxlan id 100 remote 192.168.17.130 dstport 4789 dev ens33</span><br><span class="line">ip link set vxlan10 up</span><br><span class="line">brctl addif br-vx vxlan10</span><br><span class="line">ip link add type veth</span><br><span class="line">ifconfig veth0 up</span><br><span class="line">ip netns add ns1</span><br><span class="line">ip link set dev veth1 netns ns1</span><br><span class="line">ip netns exec ns1 ip link set dev veth1</span><br><span class="line">brctl addif br-vx veth0</span><br><span class="line">ip netns exec ns1 ifconfig veth1 192.167.1.6/24 up</span><br></pre></td></tr></table></figure>
-<ul>
-<li>测试连通性:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# ip netns exec ns1 ping 192.167.1.6</span><br><span class="line">PING 192.167.1.6 (192.167.1.6) 56(84) bytes of data.</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=1 ttl=64 time=0.857 ms</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=2 ttl=64 time=0.894 ms</span><br><span class="line">64 bytes from 192.167.1.6: icmp_seq=3 ttl=64 time=0.430 ms</span><br><span class="line">^C</span><br><span class="line">--- 192.167.1.6 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 2002ms </span><br><span class="line">rtt min/avg/max/mdev = 0.430/0.727/0.894/0.210 ms</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/04/27/setup_vxlan_with_linux_bridge/" data-id="cjr39buwd000adkvrwtormgo0" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-docker_overlay_network" class="article article-type-post" itemscope="" itemprop="blogPost">
+        <section id="main"><article id="post-docker_overlay_network" class="article article-type-post" itemscope="" itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/04/27/docker_overlay_network/" class="article-date">
   <time datetime="2018-04-26T18:43:47.000Z" itemprop="datePublished">2018-04-27</time>
@@ -335,8 +95,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/27/docker_overlay_network/">Docker overlay网络介绍-转</a>
+    <h1 class="article-title" itemprop="name">
+      Docker overlay网络介绍-转
     </h1>
   
 
@@ -553,274 +313,28 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-clean_docker_containers" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/clean_docker_containers/" class="article-date">
-  <time datetime="2017-07-12T07:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器化/">容器化</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+    <a href="/2018/04/27/setup_vxlan_with_linux_bridge/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
+          Linux Bridge搭建Vxlan环境
+        
+      </div>
+    </a>
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/clean_docker_containers/">清理Docker容器</a>
-    </h1>
   
+    <a href="/2017/07/12/clean_docker_containers/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">清理Docker容器</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li><p>杀死所有正在运行的容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker kill $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除所有已经停止的容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除所有未打标签的镜像</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rmi $(docker images -q -f dangling=true)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除所有镜像</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除不用的本地volume</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$docker volume prune</span><br></pre></td></tr></table></figure></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/clean_docker_containers/" data-id="cjr39buw00000dkvrcja95ny6" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-  
-    <article id="post-setup_http_proxy_in_docker" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/setup_http_proxy_in_docker/" class="article-date">
-  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/setup_http_proxy_in_docker/">Setup http proxy in Docker</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>First create a systemd drop-in directory for the docker service: </li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p /etc/systemd/system/docker.service.d</span><br></pre></td></tr></table></figure>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/12/setup_http_proxy_in_docker/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/setup_http_proxy_in_docker/" data-id="cjr39buw80004dkvr8drjbd0e" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-setup_shadowsocks_server_centos7" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/setup_shadowsocks_server_centos7/" class="article-date">
-  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/setup_shadowsocks_server_centos7/">shadowsocks server部署</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文介绍在centos7上部署shadowsocks server</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/12/setup_shadowsocks_server_centos7/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/setup_shadowsocks_server_centos7/" data-id="cjr39buw90005dkvraum9711p" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spinnaker-local-install-ubuntu14.04" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/" class="article-date">
-  <time datetime="2017-07-11T18:43:47.000Z" itemprop="datePublished">2017-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/12/spinnaker-local-install-ubuntu14.04/">Spnnaker单机部署</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文介绍在ubuntu14.04上面安装Spnnaker</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/07/12/spinnaker-local-install-ubuntu14.04/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/07/12/spinnaker-local-install-ubuntu14.04/" data-id="cjr39buwm000edkvr2am48eja" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-install_vm_with_virsh" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/18/install_vm_with_virsh/" class="article-date">
-  <time datetime="2016-07-17T18:43:47.000Z" itemprop="datePublished">2016-07-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/虚拟化/">虚拟化</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/18/install_vm_with_virsh/">virsh安装和管理虚拟机</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="服务器安装kvm和virsh"><a href="#服务器安装kvm和virsh" class="headerlink" title="服务器安装kvm和virsh"></a>服务器安装kvm和virsh</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install kvm qemu-kvm virtinst libvirt-bin virt-viewer vncviewer -y</span><br></pre></td></tr></table></figure>
-<h2 id="启动虚拟机"><a href="#启动虚拟机" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h2><p>启动虚拟机的方式有多种：</p>
-<ul>
-<li>通过img文件的方式启动虚拟机</li>
-<li>定义好虚拟机的xml文件然后再导入img文件启动</li>
-<li>安装iso镜像的方式</li>
-</ul>
-<h4 id="通过img文件的方式启动虚拟机："><a href="#通过img文件的方式启动虚拟机：" class="headerlink" title="通过img文件的方式启动虚拟机："></a>通过img文件的方式启动虚拟机：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">virt-install --connect=qemu:///system --name=cirros --ram=512 --vcpus=1 \</span><br><span class="line">--disk path=/home/pwm/cirros-0.3.4-x86_64-disk.img,format=qcow2 --import --network network:default \</span><br><span class="line">--vnc --vncport=5920 --vnclisten=0.0.0.0</span><br></pre></td></tr></table></figure>
-<p>注：cirros默认的镜像需要cloud-init,所以启动的时候会很慢。如果不需要cloud-init，可以wget <a href="https://github.com/eprasad/virt-cirros/raw/master/virt-cirros-0.3.4-x86_64-disk.img" target="_blank" rel="noopener">https://github.com/eprasad/virt-cirros/raw/master/virt-cirros-0.3.4-x86_64-disk.img</a>. 这个是不包含cloud-init的cirros版本，启动速度很快。</p>
-<p>注：虚拟机启动后会在/etc/libvirt/qemu文件夹生成cirros.xml文件</p>
-<h4 id="定义好虚拟机的xml文件然后再导入img文件启动："><a href="#定义好虚拟机的xml文件然后再导入img文件启动：" class="headerlink" title="定义好虚拟机的xml文件然后再导入img文件启动："></a>定义好虚拟机的xml文件然后再导入img文件启动：</h4><p>xml文件模板如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&lt;domain type=&apos;kvm&apos;&gt;</span><br><span class="line">  &lt;name&gt;testvm1&lt;/name&gt;</span><br><span class="line">  &lt;uuid&gt;e6007760-2085-460a-b321-733ff079d0da&lt;/uuid&gt;</span><br><span class="line">  &lt;memory unit=&apos;KiB&apos;&gt;524288&lt;/memory&gt;</span><br><span class="line">  &lt;currentMemory unit=&apos;KiB&apos;&gt;524288&lt;/currentMemory&gt;</span><br><span class="line">  &lt;vcpu placement=&apos;static&apos;&gt;1&lt;/vcpu&gt;</span><br><span class="line">  &lt;os&gt;</span><br><span class="line">    &lt;type arch=&apos;x86_64&apos; machine=&apos;pc-i440fx-trusty&apos;&gt;hvm&lt;/type&gt;</span><br><span class="line">    &lt;boot dev=&apos;hd&apos;/&gt;</span><br><span class="line">  &lt;/os&gt;</span><br><span class="line">  &lt;features&gt;</span><br><span class="line">    &lt;acpi/&gt;</span><br><span class="line">    &lt;apic/&gt;</span><br><span class="line">    &lt;pae/&gt;</span><br><span class="line">  &lt;/features&gt;</span><br><span class="line">  &lt;clock offset=&apos;utc&apos;/&gt;</span><br><span class="line">  &lt;on_poweroff&gt;destroy&lt;/on_poweroff&gt;</span><br><span class="line">  &lt;on_reboot&gt;restart&lt;/on_reboot&gt;</span><br><span class="line">  &lt;on_crash&gt;restart&lt;/on_crash&gt;</span><br><span class="line">  &lt;devices&gt;</span><br><span class="line">    &lt;emulator&gt;/usr/bin/kvm-spice&lt;/emulator&gt;</span><br><span class="line">    &lt;disk type=&apos;file&apos; device=&apos;disk&apos;&gt;</span><br><span class="line">      &lt;driver name=&apos;qemu&apos; type=&apos;qcow2&apos;/&gt;</span><br><span class="line">      &lt;source file=&apos;/home/pwm/virt-cirros-0.3.4-x86_64-disk.img&apos;/&gt;</span><br><span class="line">      &lt;target dev=&apos;hda&apos; bus=&apos;ide&apos;/&gt;</span><br><span class="line">      &lt;address type=&apos;drive&apos; controller=&apos;0&apos; bus=&apos;0&apos; target=&apos;0&apos; unit=&apos;0&apos;/&gt;</span><br><span class="line">    &lt;/disk&gt;</span><br><span class="line">    &lt;controller type=&apos;usb&apos; index=&apos;0&apos;&gt;</span><br><span class="line">      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x01&apos; function=&apos;0x2&apos;/&gt;</span><br><span class="line">    &lt;/controller&gt;</span><br><span class="line">    &lt;controller type=&apos;pci&apos; index=&apos;0&apos; model=&apos;pci-root&apos;/&gt;</span><br><span class="line">    &lt;controller type=&apos;ide&apos; index=&apos;0&apos;&gt;</span><br><span class="line">      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x01&apos; function=&apos;0x1&apos;/&gt;</span><br><span class="line">    &lt;/controller&gt;</span><br><span class="line">    &lt;interface type=&apos;bridge&apos;&gt;</span><br><span class="line">      &lt;mac address=&apos;52:54:00:9e:18:39&apos;/&gt;</span><br><span class="line">      &lt;source bridge=&apos;br0&apos;/&gt;</span><br><span class="line">      &lt;model type=&apos;rtl8139&apos;/&gt;</span><br><span class="line">      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x03&apos; function=&apos;0x0&apos;/&gt;</span><br><span class="line">    &lt;/interface&gt;</span><br><span class="line">    &lt;serial type=&apos;pty&apos;&gt;</span><br><span class="line">      &lt;target port=&apos;0&apos;/&gt;</span><br><span class="line">    &lt;/serial&gt;</span><br><span class="line">    &lt;console type=&apos;pty&apos;&gt;</span><br><span class="line">      &lt;target type=&apos;serial&apos; port=&apos;0&apos;/&gt;</span><br><span class="line">    &lt;/console&gt;</span><br><span class="line">    &lt;input type=&apos;mouse&apos; bus=&apos;ps2&apos;/&gt;</span><br><span class="line">    &lt;input type=&apos;keyboard&apos; bus=&apos;ps2&apos;/&gt;</span><br><span class="line">    &lt;graphics type=&apos;vnc&apos; port=&apos;5920&apos; autoport=&apos;no&apos; listen=&apos;0.0.0.0&apos;&gt;</span><br><span class="line">      &lt;listen type=&apos;address&apos; address=&apos;0.0.0.0&apos;/&gt;</span><br><span class="line">    &lt;/graphics&gt;</span><br><span class="line">      &lt;model type=&apos;cirrus&apos; vram=&apos;9216&apos; heads=&apos;1&apos;/&gt;</span><br><span class="line">      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x02&apos; function=&apos;0x0&apos;/&gt;</span><br><span class="line">    &lt;/video&gt;</span><br><span class="line">    &lt;memballoon model=&apos;virtio&apos;&gt;</span><br><span class="line">      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x04&apos; function=&apos;0x0&apos;/&gt;</span><br><span class="line">    &lt;/memballoon&gt;</span><br><span class="line">  &lt;/devices&gt;</span><br><span class="line">&lt;/domain&gt;</span><br></pre></td></tr></table></figure>
-<p>default网络模板如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;interface type=&apos;network&apos;&gt;</span><br><span class="line">      &lt;mac address=&apos;52:54:00:40:ae:5c&apos;/&gt;</span><br><span class="line">      &lt;source network=&apos;default&apos;/&gt;</span><br><span class="line">      &lt;model type=&apos;rtl8139&apos;/&gt;</span><br><span class="line">      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x02&apos; function=&apos;0x0&apos;/&gt;</span><br><span class="line">&lt;/interface&gt;</span><br></pre></td></tr></table></figure>
-<h4 id="安装iso镜像的方式启动虚拟机："><a href="#安装iso镜像的方式启动虚拟机：" class="headerlink" title="安装iso镜像的方式启动虚拟机："></a>安装iso镜像的方式启动虚拟机：</h4><p>To create a fully-allocated (non-sparse) raw file:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd if=/dev/zero of=/var/lib/libvirt/images/guest.img bs=1M count=8192</span><br></pre></td></tr></table></figure>
-<p>or for newer versions of Linux, use the faster fallocate(1) program:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fallocate -l 8192M /var/lib/libvirt/images/guest.img</span><br></pre></td></tr></table></figure>
-<p>To create a sparse raw file:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rm -f /var/lib/libvirt/images/guest.img</span><br><span class="line">truncate --size=8192M /var/lib/libvirt/images/guest.img</span><br></pre></td></tr></table></figure>
-<p>To create a qcow2 file:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">qemu-img create -f qcow2 /var/lib/libvirt/images/guest.qcow2 8192</span><br><span class="line">virt-install -r 1024 --accelerate -n Fedora14 \</span><br><span class="line">-f /path/to/guest.img \</span><br><span class="line">--cdrom Fedora-14-x86_64-Live.iso</span><br></pre></td></tr></table></figure>
-<h2 id="通过vnc连接虚拟机"><a href="#通过vnc连接虚拟机" class="headerlink" title="通过vnc连接虚拟机"></a>通过vnc连接虚拟机</h2><p>VNCViewer连接打开remote display的VMware虚拟机出现闪退</p>
-<p>只需修改vnc option里面Advanced–&gt;expert–&gt;ColourLevel的值为“rgb222” or “full”即可。</p>
-<p>说明：rgb111–8 colours，rgb222–64 colours，pal8 – 256 colours，full – full colours</p>
-<h2 id="虚拟机启动时插入meta-data和user-data"><a href="#虚拟机启动时插入meta-data和user-data" class="headerlink" title="虚拟机启动时插入meta-data和user-data"></a>虚拟机启动时插入meta-data和user-data</h2><h4 id="The-meta-data-file"><a href="#The-meta-data-file" class="headerlink" title="The meta-data file"></a>The meta-data file</h4><p>The meta-data file is effectively a YAML version of the data typically available in the EC2 metadata service. The instance-id key is required. You can also include SSH public keys in this file, like this:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">instance-id: my-instance-id</span><br><span class="line">local-hostname: my-host-name</span><br><span class="line">public-keys:</span><br><span class="line">  - ssh-rsa AAAAB3NzaC1...</span><br></pre></td></tr></table></figure>
-<p>You will see examples that place ssh keys in the user-data file instead, but I believe this is the wrong solution, since it forces you to use a “cloud-config” format user-data file. Putting ssh keys into the meta-data provides you more flexibility with your user-data content.</p>
-<h4 id="The-user-data-file"><a href="#The-user-data-file" class="headerlink" title="The user-data file"></a>The user-data file</h4><p>The user-data can be any of the various formats supported by cloud-init. For example, it could simply be a shell script:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">yum -y install some-critical-package</span><br></pre></td></tr></table></figure>
-<p>Or it could be a cloud-config YAML document:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#cloud-config</span><br><span class="line">write-files:</span><br><span class="line">  - path: /etc/profile.d/gitaliases.sh</span><br><span class="line">    content: |</span><br><span class="line">      alias gc=&quot;git commit&quot;</span><br><span class="line">      alias gcv=&quot;git commit --no-verify&quot;</span><br><span class="line">runcmd:</span><br><span class="line">  - setenforce 1</span><br></pre></td></tr></table></figure>
-<h4 id="Putting-it-all-together"><a href="#Putting-it-all-together" class="headerlink" title="Putting it all together"></a>Putting it all together</h4><p>Once you have created your meta-data and user-data files, you can create the configuration drive like this:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">genisoimage -o config.iso -V cidata -r -J meta-data user-data</span><br></pre></td></tr></table></figure>
-<p>To boot an instance using this configuration drive, you could do something like this:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">virt-install -n vm-u-5 -r 256 -w network=default --disk path=/home/pwm/vm-u-5.img,format=qcow2 --import --disk path=/home/pwm/config.iso,device=cdrom --vnc --vncport=5925 --vnclisten=0.0.0.0</span><br></pre></td></tr></table></figure>
-<p>注：如果meta-data或者user-data错误的话，需要删除rm -rf /var/lib/cloud，重新启动。</p>
-<h2 id="virsh常用命令"><a href="#virsh常用命令" class="headerlink" title="virsh常用命令"></a>virsh常用命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">virsh define vm1.xml</span><br><span class="line">virsh start vm1</span><br><span class="line">virsh list —all</span><br><span class="line">virsh destroy vm1</span><br><span class="line">virsh undefine vm1</span><br><span class="line">virsh shutdown vm1</span><br><span class="line">virsh reboot vm1</span><br></pre></td></tr></table></figure>
-<p>参考内容：</p>
-<p><a href="http://accelazh.github.io/virtualization/Play-With-Libvirt-KVM/" target="_blank" rel="noopener">http://accelazh.github.io/virtualization/Play-With-Libvirt-KVM/</a></p>
-<p><a href="http://blog.oddbit.com/2015/03/10/booting-cloud-images-with-libvirt/" target="_blank" rel="noopener">http://blog.oddbit.com/2015/03/10/booting-cloud-images-with-libvirt/</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/07/18/install_vm_with_virsh/" data-id="cjr39buw70003dkvrwk6j357k" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
 
 </section>
         
